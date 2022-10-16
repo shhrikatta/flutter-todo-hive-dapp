@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:todolist_hivedb/data/todolist_model.dart';
 import 'package:todolist_hivedb/utils/create_dialog.dart';
 import 'package:todolist_hivedb/utils/todo_title.dart';
@@ -30,7 +32,7 @@ class _HomePageState extends State<HomePage> {
 
   void onCheckBoxChanged(bool? value, int index) {
     var taskRequiredToUpdate = listModel.listToDo[index];
-    listModel.updateTask(taskRequiredToUpdate.id, taskRequiredToUpdate.name);
+    listModel.toggleComplete(taskRequiredToUpdate.id);
   }
 
   void onSave() {
@@ -75,16 +77,20 @@ class _HomePageState extends State<HomePage> {
               title: const Text("To-Do"),
               centerTitle: true,
             ),
-            body: ListView.builder(
-              itemCount: listModel.listToDo.length,
-              itemBuilder: (context, index) {
-                return ToDoTile(
-                  taskName: listModel.listToDo[index].name,
-                  isTaskCompleted: listModel.listToDo[index].isCompleted,
-                  onChanged: (value) => onCheckBoxChanged(value, index),
-                  deleteItem: (context) => deleteTask(index),
-                );
-              },
+            body: LiquidPullToRefresh(
+              onRefresh: () => listModel.getTodos(),
+              showChildOpacityTransition: false,
+              child: ListView.builder(
+                itemCount: listModel.listToDo.length,
+                itemBuilder: (context, index) {
+                  return ToDoTile(
+                    taskName: listModel.listToDo[index].name,
+                    isTaskCompleted: listModel.listToDo[index].isCompleted,
+                    onChanged: (value) => onCheckBoxChanged(value, index),
+                    deleteItem: (context) => deleteTask(index),
+                  );
+                },
+              ),
             ),
           );
   }

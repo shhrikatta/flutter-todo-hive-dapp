@@ -36,7 +36,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   http: ^0.13.5
+  liquid_pull_to_refresh: ^3.0.1
   provider: ^6.0.4
+  pull_to_refresh: ^2.0.0
   web3dart: ^2.4.1
   web_socket_channel: ^2.2.0
 

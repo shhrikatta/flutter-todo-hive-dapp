@@ -87,6 +87,7 @@ class ToDoListModel extends ChangeNotifier {
     _updateTask = _deployedContract.function("updateTask");
     _todoCount = _deployedContract.function("taskCount");
     _deleteTask = _deployedContract.function("deleteTask");
+    _toggleCompleteTask = _deployedContract.function("toggleComplete");
     _todos = _deployedContract.function("todos");
 
     print(
