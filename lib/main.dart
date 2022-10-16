@@ -6,8 +6,10 @@ import 'package:todolist_hivedb/data/todolist_model.dart';
 import 'pages/home_page.dart';
 
 void main() async {
+  Hive.registerAdapter(TaskAdapter());
   // init hive DB
   await Hive.initFlutter();
+
   await Hive.openBox('box');
 
   runApp(const MyApp());

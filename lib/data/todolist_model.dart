@@ -216,3 +216,20 @@ class Task {
   final bool isCompleted;
   Task({required this.id, required this.name, required this.isCompleted});
 }
+
+class TaskAdapter extends TypeAdapter<Task> {
+  @override
+  Task read(BinaryReader reader) {
+    throw Task(id: -1, name: "ToDo", isCompleted: false);
+  }
+
+  @override
+  // TODO: implement typeId
+  int get typeId => 0;
+
+  @override
+  void write(BinaryWriter writer, Task obj) {
+    // TODO: implement write
+    writer.write(obj.id);
+  }
+}
