@@ -1,23 +1,26 @@
 import 'package:hive/hive.dart';
+import 'package:todolist_hivedb/data/todolist_model.dart';
 
 class ToDoDataBase {
-  List listToDo = [];
+  // List<Task> listToDo = [];
   var myBox = Hive.box('box');
   static const String key = "TODOLIST";
 
   // execute for 1st ever launch of the app
+/*
   void createInitialData() {
     listToDo = [
-      ["To Do 1", false],
-      ["To Do 2", false],
+      Task(id: 0, name: "To Do 1", isCompleted: false),
     ];
   }
+*/
 
-  void loadData() {
-    listToDo = myBox.get(key);
+  List<Task> loadData() {
+    return myBox.get(key);
+    // return listToDo;
   }
 
-  void updateData() {
+  void updateData(List<Task> listToDo) {
     myBox.put(key, listToDo);
   }
 }

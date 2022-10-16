@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:todolist_hivedb/data/database.dart';
+import 'package:provider/provider.dart';
+import 'package:todolist_hivedb/data/todolist_model.dart';
 import 'package:todolist_hivedb/utils/create_dialog.dart';
 import 'package:todolist_hivedb/utils/todo_title.dart';
 
@@ -12,36 +12,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ToDoDataBase db = ToDoDataBase();
-  var myBox = Hive.box('box');
+  // ToDoDataBase db = ToDoDataBase();
   final _controller = TextEditingController();
+
+  late ToDoListModel listModel;
+  // ToDoListModel listModel = ToDoListModel();
 
   @override
   void initState() {
     // if this is 1st time ever opening this app
-    myBox.get(ToDoDataBase.key) == null
-        ? db.createInitialData()
-        : db.loadData();
+    // listModel.getTodos();
+
+    // myBox.get(ToDoDataBase.key) == null ? db.listToDo : db.loadData();
 
     super.initState();
   }
 
   void onCheckBoxChanged(bool? value, int index) {
-    setState(() {
-      db.listToDo[index][1] = !db.listToDo[index][1];
-    });
-
-    db.updateData();
+    var taskRequiredToUpdate = listModel.listToDo[index];
+    listModel.updateTask(taskRequiredToUpdate.id, taskRequiredToUpdate.name);
   }
 
   void onSave() {
-    setState(() {
-      db.listToDo.add([_controller.text, false]);
-      _controller.clear();
-    });
-
     Navigator.of(context).pop();
-    db.updateData();
+    listModel.addTask(_controller.text);
+    _controller.clear();
   }
 
   void onCancel() => Navigator.of(context).pop();
@@ -59,38 +54,38 @@ class _HomePageState extends State<HomePage> {
   }
 
   void deleteTask(int index) {
-    setState(() {
-      db.listToDo.removeAt(index);
-    });
-
-    db.updateData();
+    listModel.deleteTask(listModel.listToDo[index].id);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.yellow[200],
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.yellow,
-        onPressed: createNewTask,
-        child: const Icon(Icons.add),
-      ),
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text("To-Do"),
-        centerTitle: true,
-      ),
-      body: ListView.builder(
-        itemCount: db.listToDo.length,
-        itemBuilder: (context, index) {
-          return ToDoTile(
-            taskName: db.listToDo[index][0],
-            isTaskCompleted: db.listToDo[index][1],
-            onChanged: (value) => onCheckBoxChanged(value, index),
-            deleteItem: (context) => deleteTask(index),
+    listModel = Provider.of<ToDoListModel>(context, listen: true);
+
+    return listModel.isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            backgroundColor: Colors.yellow[200],
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.yellow,
+              onPressed: createNewTask,
+              child: const Icon(Icons.add),
+            ),
+            appBar: AppBar(
+              elevation: 0,
+              title: const Text("To-Do"),
+              centerTitle: true,
+            ),
+            body: ListView.builder(
+              itemCount: listModel.listToDo.length,
+              itemBuilder: (context, index) {
+                return ToDoTile(
+                  taskName: listModel.listToDo[index].name,
+                  isTaskCompleted: listModel.listToDo[index].isCompleted,
+                  onChanged: (value) => onCheckBoxChanged(value, index),
+                  deleteItem: (context) => deleteTask(index),
+                );
+              },
+            ),
           );
-        },
-      ),
-    );
   }
 }
