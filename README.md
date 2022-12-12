@@ -1,16 +1,7 @@
-# todolist_hivedb
+ToDo list flutter with ethereum blockchain integration also saves into hive db for offline mode feature.
 
-A new Flutter project.
+This todo list saves and fetches details from backend using ethereum blockchain.
 
-## Getting Started
+This project uses ganache as tool to deploy into our local server.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This project also includes solidity script which handles the backend blockchain logic. And this can be executed using any solidity ide such as REMIX ide
